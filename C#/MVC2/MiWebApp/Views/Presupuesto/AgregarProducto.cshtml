@@ -1,0 +1,41 @@
+@model MiWebApp.ViewModels.AgregarProductoViewModel
+
+<section>
+    <h3>Agregar producto a un presupuesto</h3>
+</section>
+
+
+
+<form asp-controller="Presupuesto" asp-action="AgregarProducto" method="post">
+    <section class="mb-3">
+        <input type="hidden" asp-for="IdPresupuesto" />
+    </section>
+
+    <section class="mb-3">
+        <label asp-for="IdProducto" class="control-label"></label>
+        <select asp-for="IdProducto" asp-items="@Model.ListaProductos" class="form-control">
+            <option value="">-- Seleccionar Producto --</option>
+        </select>
+        <span asp-validation-for="IdProducto" class="text-danger"></span>
+    </section>
+    <section class="mb-3">
+        <label asp-for="Cantidad" class="control-label"></label>
+        <input asp-for="Cantidad" class="form-control" min=1 />
+        <span asp-validation-for="Cantidad" class="text-danger"></span>
+    </section>
+
+    <button type="submit" class="btn btn-primary">Agregar</button>
+</form>
+
+<section>
+
+    <a asp-controller="Presupuesto" asp-action="Index" class="btn btn-primary">
+        Index
+    </a>
+
+
+</section>
+<!-- , VER EL TEMA DE QUE PASA CUANDO AGREGAN ALGO QUE YA EXISTE Y HACER EL TEMA DE LAS CANTIDADES, VER EL TEMA DE LOS SPAN Y VALIDACIONES MODEL.VALID EN TODOS LADOS PONER, ETC-->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
