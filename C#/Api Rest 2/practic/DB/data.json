@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "Title": "Noticias del D\u00EDa",
+    "Genre": "Noticias",
+    "DiaDeLaSemana": "Lunes",
+    "StartTime": 8,
+    "DurationMinutes": 60
+  },
+  {
+    "Id": 3,
+    "Title": "de",
+    "Genre": "a",
+    "DiaDeLaSemana": "Jueves",
+    "StartTime": 21,
+    "DurationMinutes": 120
+  },
+  {
+    "Id": 4,
+    "Title": "de",
+    "Genre": "a",
+    "DiaDeLaSemana": "Jueves",
+    "StartTime": 19,
+    "DurationMinutes": 120
+  },
+  {
+    "Id": 3,
+    "Title": "string",
+    "Genre": "string",
+    "DiaDeLaSemana": "Lunes",
+    "StartTime": 7,
+    "DurationMinutes": 30
+  }
+]

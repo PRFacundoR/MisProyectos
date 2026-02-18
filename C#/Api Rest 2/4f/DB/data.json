@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "Title": "Noticias del Día",
+    "Genre": "Noticias",
+    "DiaDeLaSemana": "Lunes",
+    "StartTime": 8,
+    "DurationMinutes": 60
+  },
+  {
+    "Id": 2,
+    "Title": "Cocina Fácil",
+    "Genre": "Cocina",
+    "DiaDeLaSemana": "Lunes",
+    "StartTime": 9,
+    "DurationMinutes": 30
+  },
+  {
+    "Id": 3,
+    "Title": "Cine de Tarde",
+    "Genre": "Películas",
+    "DiaDeLaSemana": "Viernes",
+    "StartTime": 18,
+    "DurationMinutes": 120
+  },
+  {
+    "Id": 4,
+    "Title": "Deportes al Día",
+    "Genre": "Deportes",
+    "DiaDeLaSemana": "Domingo",
+    "StartTime": 20,
+    "DurationMinutes": 60
+  }
+]
