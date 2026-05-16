@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat en tiempo real</title>
+    <script type="module">
+
+
+
+
+
+
+
+
+        import { io } from "https://cdn.socket.io/4.5.4/socket.io.esm.min.js";
+
+
+
+        //usuario va aca
+        const getUsername = () => {
+            const username = localStorage.getItem('username')
+            if (username) return username
+
+            const randomUsername = `user_${Math.random().toString(36).slice(2, 8)}`
+            localStorage.setItem('username', randomUsername)
+            return randomUsername
+        }
+        const miUsuario = getUsername();
+
+
+
+        const socket = io(/*se le pasa*/{//esto es para configurar el socket, en este caso para que no se queje de la diferencia de hora entre el cliente y el servidor, ya que el servidor puede estar en una zona horaria diferente a la del cliente
+            auth: {//auth sirve para enviar información de autenticación al servidor, en este caso se le pasa el offset del servidor para que el cliente pueda ajustar su hora y mostrar los mensajes en el orden correcto
+                //otro auth que se podría pasar es el token de autenticación, para que el servidor pueda verificar que el cliente está autenticado antes de permitirle enviar mensajes, pero en este caso no se implementa la autenticación, solo se pasa el offset del servidor para ajustar la hora del cliente
+                username: miUsuario,//esto es para que el cliente tenga un nombre de usuario, en este caso se genera un nombre de usuario aleatorio utilizando una API de datos aleatorios, y se guarda en el localStorage para que el cliente tenga el mismo nombre de usuario cada vez que se conecta, esto es importante para que los mensajes se muestren con el nombre de usuario correcto, ya que si el cliente no tiene un nombre de usuario, los mensajes pueden mostrarse sin un nombre de usuario o con un nombre de usuario genérico como "Usuario1", "Usuario2", etc., con esta configuración se evita ese problema
+                serverOffset: 0 //sirve para que el cliente y el servidor tengan la misma hora, aunque estén en zonas horarias diferentes, esto es importante para que los mensajes se muestren en el orden correcto, ya que si el cliente tiene una hora diferente a la del servidor, los mensajes pueden mostrarse en un orden incorrecto, por ejemplo, si el cliente tiene una hora adelantada al servidor, los mensajes enviados por el cliente pueden mostrarse antes que los mensajes enviados por el servidor, aunque en realidad fueron enviados después, con esta configuración se evita ese problema
+            }
+
+        });
+        /*const backendUrl = import.meta.env.VITE_BACKEND_URL; // En dev es localhost, en prod es la URL real
+const socket = io(backendUrl);*/
+
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const chat = document.getElementById('messages');
+
+        //usuario
+
+
+        //PASO 1 esto  guarda el mensaje en el socket y lo envia al backend 
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = input.value;
+            if (message) {
+                socket.emit('chat message', message, miUsuario);                //addMessage(message, 'sent');
+                input.value = '';
+            }
+        });
+
+        //PASO 4 cuando recibimos del back los mensajes, los mostramos en el front
+        socket.on('chat message', (msg, serverOffset, usernameRecibido) => {
+            const item = `<li><strong>${usernameRecibido}:</strong> ${msg}</li>`;
+            chat.insertAdjacentHTML('beforeend', item);
+            // socket.auth.serverOffset = msg.serverOffset; //actualizamos el offset del cliente con el offset del servidor, esto es importante para que los mensajes se muestren en el orden correcto, ya que si el cliente tiene una hora diferente a la del servidor, los mensajes pueden mostrarse en un orden incorrecto, por ejemplo, si el cliente tiene una hora adelantada al servidor, los mensajes enviados por el cliente pueden mostrarse antes que los mensajes enviados por el servidor, aunque en realidad fueron enviados después, con esta configuración se evita ese problema
+            socket.auth.serverOffset = serverOffset;//actualizamos el offset del cliente con el offset del servidor, esto es importante para que los mensajes se muestren en el orden correcto, ya que si el cliente tiene una hora diferente a la del servidor, los mensajes pueden mostrarse en un orden incorrecto, por ejemplo, si el cliente tiene una hora adelantada al servidor, los mensajes enviados por el cliente pueden mostrarse antes que los mensajes enviados por el servidor, aunque en realidad fueron enviados después, con esta configuración se evita ese problema
+        });
+
+
+
+
+        /*
+        socket.on('message', (message) => {
+            addMessage(message, 'received');
+        });
+
+        function addMessage(message, type) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', type);
+            messageElement.textContent = message;
+            chat.appendChild(messageElement);
+            chat.scrollTop = chat.scrollHeight;
+        }   */
+    </script>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            background-color: #007AFF;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .message.received {
+            background-color: #e5e5e5;
+            color: black;
+            align-self: flex-start;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        form input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        form button:hover {
+            background-color: #0051D5;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="chat">
+        <ul id="messages"></ul>
+        <form id="form">
+            <input type="text" name="message" id="input" placeholder="Escribe tu mensaje..." autocomplete="off"
+                required>
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+
+</body>
+
+</html>

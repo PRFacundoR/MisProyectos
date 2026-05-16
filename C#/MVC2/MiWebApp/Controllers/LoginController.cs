@@ -17,6 +17,9 @@ public class LoginController : Controller
         this.auntetificacion = auntetificacion;
     }
 
+
+    
+
     [HttpGet]
     public IActionResult Index()
     {
@@ -58,4 +61,20 @@ public class LoginController : Controller
         auntetificacion.Logout();
         return RedirectToAction("Index");
     }
+}
+
+using System;
+public class EmployeeListNotFoundException : Exception
+{
+ public EmployeeListNotFoundException()
+ {
+ }
+ public EmployeeListNotFoundException(string message)
+ : base(message)
+ {
+ }
+ public EmployeeListNotFoundException(string message, Exception inner)
+ : base(message, inner)
+ {
+ }
 }

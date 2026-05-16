@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo SPA - Gamer API</title>
+    <style>
+        /* Un poco de CSS para que no se vea feo */
+        body { font-family: sans-serif; background-color: #121212; color: white; padding: 20px; }
+        nav { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        /* Los links parecen links normales de una página clásica */
+        .link-falso { cursor: pointer; color: #00ffcc; text-decoration: none; margin-right: 15px; font-weight: bold; }
+        .link-falso:hover { text-decoration: underline; }
+        
+        #pantalla-dinamica { padding: 20px; background-color: #1e1e1e; border-radius: 8px; }
+        .cargando { color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <h1>🎮 Tu Comparador de Precios SPA</h1>
+
+    <nav>
+        <a href="/inicio" class="link-falso">Inicio</a>
+        <a href="/juegos" class="link-falso">Lista de Juegos</a>
+        <a href="/perfil" class="link-falso">Mi Perfil</a>
+    </nav>
+
+    <div id="pantalla-dinamica">
+        <h2>Bienvenido</h2>
+        <p>Hace clic en "Lista de Juegos" para ver la magia sin recargar.</p>
+    </div>
+
+    <script>
+        // Simulamos tu Backend en C# escupiendo JSON (Datos crudos)
+        const baseDeDatosAPI = {
+            "/inicio": "<h2>Bienvenido</h2><p>Hace clic en 'Lista de Juegos' para ver la magia sin recargar.</p>",
+            "/juegos": "<h2>Juegos Disponibles</h2><ul><li>Mass Effect Legendary Edition - $40</li><li>Tormented Souls 2 - $30</li></ul>",
+            "/perfil": "<h2>Tu Perfil</h2><p>Usuario: Facundo<br>Rango: Oro</p>"
+        };
+
+        // Seleccionamos todos los links de la barra de navegación
+        const botones = document.querySelectorAll('.link-falso');
+        const pantalla = document.getElementById('pantalla-dinamica');
+
+        botones.forEach(boton => {
+            boton.addEventListener('click', (evento) => {
+                
+                // 2. EL ENGAÑO (EL SECUESTRO)
+                // ¡VITAL! Esto frena al navegador. Le dice: "No vayas al servidor C#, yo me encargo".
+                evento.preventDefault(); 
+
+                // Leemos a dónde quería ir el usuario (ej: sacamos el "/juegos" del href)
+                const rutaDestino = evento.target.getAttribute('href');
+
+                // 3. MODIFICAR EL HISTORIAL Y LA URL
+                // Empujamos la nueva URL arriba. El usuario ve "/juegos" en su barra.
+                // Guardamos la ruta en la 'mochila' (state) por si luego toca el botón Atrás.
+                window.history.pushState({ urlGuardada: rutaDestino }, "", rutaDestino);
+
+                // Llamamos a la función que pide los datos y pinta la pantalla
+                simularFetchYRenderizar(rutaDestino);
+            });
+        });
+
+        // 4 y 5. EL FETCH A C# Y PINTAR EL DOM
+        function simularFetchYRenderizar(ruta) {
+            // Ponemos un cartel de carga provisorio
+            pantalla.innerHTML = "<h3 class='cargando'>⏳ Consultando a la API en C#...</h3>";
+
+            // Usamos setTimeout para simular el medio segundo que tarda el viaje por internet
+            setTimeout(() => {
+                // Buscamos el JSON/HTML de nuestra base de datos falsa
+                const datosRecibidos = baseDeDatosAPI[ruta];
+
+                if (datosRecibidos) {
+                    // ¡PINTAMOS! Reemplazamos el contenido de la caja sin recargar nada más
+                    pantalla.innerHTML = datosRecibidos;
+                } else {
+                    pantalla.innerHTML = "<h2>Error 404</h2><p>Ese endpoint no existe en el backend.</p>";
+                }
+            }, 500); 
+        }
+
+        // EL BOTÓN ATRÁS DEL NAVEGADOR (El evento popstate)
+        // Si no ponemos esto, cuando el usuario toque la flecha "Atrás", la URL cambia pero la pantalla queda congelada.
+        window.addEventListener('popstate', (evento) => {
+            // Abrimos la mochila (state). Si hay algo, volvemos a renderizar esa ruta.
+            // Si la mochila es null (porque volvió a la URL original), mostramos "/inicio".
+            const rutaAnterior = evento.state ? evento.state.urlGuardada : "/inicio";
+            simularFetchYRenderizar(rutaAnterior);
+        });
+
+    </script>
+</body>
+</html>

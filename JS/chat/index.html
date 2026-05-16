@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat 100% Local</title>
+    <style>
+        body { font-family: sans-serif; background: #eee; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .chat { width: 350px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; height: 80vh; }
+        .header { background: #2E7D32; color: white; padding: 15px; text-align: center; border-radius: 10px 10px 0 0; }
+        .mensajes { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #e8ede6; }
+        
+        .burbuja { padding: 10px; border-radius: 10px; max-width: 80%; }
+        .burbuja.yo { background: #dcf8c6; align-self: flex-end; border-bottom-right-radius: 0; }
+        .burbuja.bot { background: white; align-self: flex-start; border-bottom-left-radius: 0; }
+        
+        .controles { padding: 10px; background: white; display: flex; gap: 5px; border-radius: 0 0 10px 10px; }
+        input { flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #2E7D32; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="chat">
+        <div class="header">
+            Bot Local (Sin Internet)
+            <br>
+            <button id="btn-permiso" style="margin-top: 10px; font-size: 0.8em; background: #1b4b1e;">1. Activar Notificaciones</button>
+        </div>
+
+        <div class="mensajes" id="caja-mensajes">
+            <div class="burbuja bot"><strong>Bot SW:</strong> ¡Hola! Escribime algo y te respondo desde la memoria RAM.</div>
+        </div>
+
+        <div class="controles">
+            <input type="text" id="input-texto" placeholder="Escribí un mensaje...">
+            <button id="btn-enviar">Enviar</button>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

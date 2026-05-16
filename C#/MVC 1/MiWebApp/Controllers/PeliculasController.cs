@@ -92,7 +92,7 @@ public class PeliculasController : Controller
 
     }
 
-    [HttpPost]
+   /* [HttpPost]
 
     public IActionResult Details(PeliculaIndexViewModel pelivm)
     {
@@ -112,7 +112,7 @@ public class PeliculasController : Controller
             return RedirectToAction("Index", "Login");
         }
 
-    }
+    }*/
 
 
 
@@ -122,64 +122,8 @@ public class PeliculasController : Controller
 
 
 
-    [HttpGet]
-
-    public IActionResult Create()
-    {
-
-        var securityCheck = CheckAdminPermissions();
-        if (securityCheck != null) return securityCheck;
-
-        List<Pelicula> pelis = peliculas.GetAll();
-
-
-
-
-        var items = Enum.GetValues(typeof(Categoria)).Cast<Categoria>().Select(c => new SelectListItem { Value = c.ToString(), Text = c.ToString() }).ToList();
-        var pvm = new PeliculaCreateViewModel
-        {
-
-            ListaCategoria = new SelectList(items, "Value", "Text")
-
-        };
-        return View(pvm);
-    }
-
-
-    [HttpPost]
-
-    public IActionResult Create(PeliculaCreateViewModel pVM)
-    {
-        var securityCheck = CheckAdminPermissions();
-        if (securityCheck != null) return securityCheck;
-
-         if (!(pVM.Anio <= DateTime.Now.Year))
-        {
-            ModelState.AddModelError("Anio", "La fecha no puede ser posterior a este año");
-
-
-        }
-        if (!ModelState.IsValid)
-        {
-            List<Pelicula> pelis = peliculas.GetAll();
-            var items = Enum.GetValues(typeof(Categoria)).Cast<Categoria>().Select(c => new SelectListItem { Value = c.ToString(), Text = c.ToString() }).ToList();
-            pVM.ListaCategoria = new SelectList(items, "Value", "Text");
-
-            return View(pVM);
-        }
-
-
-
-
-        Pelicula nuevaP = new Pelicula(pVM);
-
-        peliculas.Add(nuevaP);
-        return RedirectToAction("Index");
-
-
-
-    }
-
+    
+    
 
 
 
